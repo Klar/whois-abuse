@@ -1,3 +1,5 @@
+import time
+
 from ipwhois import IPWhois
 
 # for mappings  like CH to Switzerland
@@ -14,13 +16,23 @@ list_file.close()
 
 #for testing purpose only
 my_list = ['111.111.111.111','222.222.222.222']
+ip_abuse = {}
 
-try:
-	for ip in my_list:
+for ip in my_list:
+	try:
+		ip = str(ip)
+		ip_abuse[ip] = {'Country':[],'email':[]}
+
 		response = IPWhois(ip.strip("\n")).lookup_whois()
-		print "%s - %s" % (ip, countries[response['asn_country_code']])
+		con = countries[response['asn_country_code']]
+		ip_abuse[ip]["Country"].append(con)
+
 		for mail in response["nets"][0]["emails"].split():
-			print " * %s" % mail
-		print "\n"
-except Exception, e:
-	print e
+			ip_abuse[ip]["email"].append(mail)
+	except:
+		print "no whois for %s" %ip
+		continue
+
+	time.sleep(2)
+
+print ip_abuse
