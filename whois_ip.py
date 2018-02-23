@@ -1,6 +1,7 @@
 import time
-
+import traceback
 from ipwhois import IPWhois
+import pprint
 
 # for mappings  like CH to Switzerland
 from ipwhois.utils import get_countries
@@ -11,28 +12,45 @@ input_file = 'ips.txt'
 
 #read file and create a list
 list_file = open(input_file)
-my_list = list_file.readlines()
+iplist = list_file.readlines()
 list_file.close()
 
-#for testing purpose only
-my_list = ['111.111.111.111','222.222.222.222']
 ip_abuse = {}
 
-for ip in my_list:
+for ip in iplist:
 	try:
 		ip = str(ip)
-		ip_abuse[ip] = {'Country':[],'email':[]}
+		ip_abuse[ip] = {'ISP':[], 'Country':[], 'email':[]}
 
-		response = IPWhois(ip.strip("\n")).lookup_whois()
-		con = countries[response['asn_country_code']]
-		ip_abuse[ip]["Country"].append(con)
+		obj = IPWhois('{}'.format(ip.strip("\n")))
+		result = obj.lookup_rdap(depth=1)
 
-		for mail in response["nets"][0]["emails"].split():
-			ip_abuse[ip]["email"].append(mail)
+		#pprint.pprint(result)
+
+		for r_object in result['objects']:
+
+			if result['objects'][r_object]['roles']:
+
+				email = result['objects'][r_object]['contact']['email'][0]['value']
+
+				ip_abuse[ip]["email"].append(email)
+			
+
+		country = countries[result['asn_country_code']]
+		ip_abuse[ip]["Country"].append(country)
+		
+		isp = result['network']['name']
+		ip_abuse[ip]["ISP"].append(isp)
+
+
+
 	except:
+		print str(traceback.format_exc())
 		print "no whois for %s" %ip
 		continue
 
 	time.sleep(2)
 
-print ip_abuse
+for key, value in ip_abuse.items():
+	print key
+	print value
