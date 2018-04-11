@@ -20,21 +20,25 @@ ip_abuse = {}
 for ip in iplist:
 	try:
 		ip = str(ip)
-		ip_abuse[ip] = {'ISP':[], 'Country':[], 'email':[]}
+		ip_abuse[ip] = {'ISP':[], 'Country':[], 'abuse':[],'emails':[]}
 
 		obj = IPWhois('{}'.format(ip.strip("\n")))
 		result = obj.lookup_rdap(depth=1)
 
 		#pprint.pprint(result)
-
+		
 		for r_object in result['objects']:
 
-			if result['objects'][r_object]['roles']:
+			if result['objects'][r_object]['contact']['email']:
 
 				email = result['objects'][r_object]['contact']['email'][0]['value']
 
-				ip_abuse[ip]["email"].append(email)
+				ip_abuse[ip]["emails"].append(email)
 			
+		for mail in ip_abuse[ip]["emails"]:
+			if "abuse" in mail:
+				ip_abuse[ip]["abuse"] = mail	
+
 
 		country = countries[result['asn_country_code']]
 		ip_abuse[ip]["Country"].append(country)
@@ -51,6 +55,8 @@ for ip in iplist:
 
 	time.sleep(2)
 
-for key, value in ip_abuse.items():
-	print key
-	print value
+print ip_abuse
+
+#for key, value in ip_abuse.items():
+#	print key
+#	print value
