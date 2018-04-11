@@ -4,5 +4,5 @@ Insert an IP list and get the Country and Abuse E-Mails
 Running goes something like:
 <pre>
 python whois_ip.py 
-{'111.111.111.111': {'Country': ['Japan'], 'email': ['abuse@dion.ne.jp', 'hm-changed@apnic.net', 'ip-apnic@nic.ad.jp', 'hostmaster@nic.ad.jp', 'abuse@apnic.net']}, '222.222.222.222': {'Country': ['China'], 'email': ['hm-changed@apnic.net', 'anti-spam@ns.chinanet.cn.net', 'hostmaster@hbtele.com', 'renbin@hbtele.com', 'dingsy@cndata.com', 'zhengzm@gsta.com']}}
+{'8.8.8.8\n': {'Country': ['United States'], 'ISP': [u'LVLT-GOGL-8-8-8'], 'emails': [u'network-abuse@google.com', u'arin-contact@google.com'], 'abuse': u'network-abuse@google.com'}, '1.1.1.1\n': {'Country': ['Australia'], 'ISP': [u'APNIC-LABS'], 'emails': [u'research@apnic.net', u'abuse@apnic.net'], 'abuse': u'abuse@apnic.net'}}
 </pre>
